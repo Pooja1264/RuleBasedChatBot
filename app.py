@@ -171,13 +171,39 @@ st.markdown("""
         border-radius: 16px !important;
     }
 
-    /* Sidebar */
+    /* Sidebar — dark indigo theme with gold accents (fixes text/bg clash) */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f8f9ff 0%, #f0f1fb 100%);
-        border-right: 1px solid #e5e7eb;
+        background: linear-gradient(180deg, #1e1b4b 0%, #312e81 55%, #4c1d95 100%);
+        border-right: 1px solid #3730a3;
+    }
+    section[data-testid="stSidebar"] * {
+        color: #ede9fe !important;
+    }
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 {
+        color: #fbbf24 !important;
+        font-weight: 800 !important;
+    }
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] li {
+        color: #e0e7ff !important;
+        font-size: 13.5px;
+    }
+    section[data-testid="stSidebar"] strong {
+        color: #fde68a !important;
+    }
+    section[data-testid="stSidebar"] hr {
+        border-color: #4c1d95 !important;
     }
     section[data-testid="stSidebar"] .stCode {
         border-radius: 10px;
+    }
+    section[data-testid="stSidebar"] .stCode code {
+        background: #0f0d2b !important;
+        color: #a5f3fc !important;
+        border: 1px solid #4c1d95;
+        border-radius: 8px;
     }
 
     /* Buttons */
