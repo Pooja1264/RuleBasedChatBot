@@ -111,32 +111,25 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Feature cards */
-    .feature-card {
-        padding: 20px 14px;
-        border-radius: 18px;
-        background: white;
-        border: 1px solid #eef0f7;
-        text-align: center;
-        min-height: 118px;
-        box-shadow: 0 6px 20px rgba(80,70,180,0.08);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    /* Quick-action command buttons (functional "keyboard") */
+    div[data-testid="column"] .stButton button {
+        background: white !important;
+        color: #312e81 !important;
+        border: 1.5px solid #e0e7ff !important;
+        border-radius: 16px !important;
+        padding: 14px 8px !important;
+        min-height: 82px;
+        white-space: normal !important;
+        line-height: 1.3;
+        font-size: 13.5px !important;
+        box-shadow: 0 6px 18px rgba(80,70,180,0.08) !important;
     }
-    .feature-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(80,70,180,0.18);
-    }
-    .feature-icon { font-size: 30px; }
-    .feature-title {
-        font-size: 14.5px;
-        font-weight: 700;
-        margin-top: 7px;
-        color: #312e81;
-    }
-    .feature-text {
-        font-size: 12px;
-        color: #6b7280;
-        margin-top: 4px;
+    div[data-testid="column"] .stButton button:hover {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+        color: white !important;
+        border-color: transparent !important;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(102,70,200,0.3) !important;
     }
 
     /* Info box */
@@ -460,6 +453,29 @@ def chatbot_response(user_message):
         )
 
 # =========================================================
+# SESSION STATE
+# =========================================================
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "Hello! 👋 I'm **RuleBot**.\n\n"
+                "Type **help** to see everything I can do."
+            )
+        }
+    ]
+
+# =========================================================
+# HELPER: run a command as if the user typed/tapped it
+# =========================================================
+def send_command(cmd):
+    st.session_state.messages.append({"role": "user", "content": cmd})
+    response = chatbot_response(cmd)
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.rerun()
+
+# =========================================================
 # HERO SECTION
 # =========================================================
 st.markdown("""
@@ -489,49 +505,45 @@ perform calculations, or have some fun with jokes and quotes! 🚀
 """, unsafe_allow_html=True)
 
 # =========================================================
-# FEATURE CARDS
+# QUICK-ACTION BUTTONS — tap to actually run the feature
 # =========================================================
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.markdown("""
-    <div class="feature-card">
-        <div class="feature-icon">🧠</div>
-        <div class="feature-title">AI Knowledge</div>
-        <div class="feature-text">Learn AI & Python basics</div>
-    </div>
-    """, unsafe_allow_html=True)
-with col2:
-    st.markdown("""
-    <div class="feature-card">
-        <div class="feature-icon">🧮</div>
-        <div class="feature-title">Smart Calculator</div>
-        <div class="feature-text">Perform quick calculations</div>
-    </div>
-    """, unsafe_allow_html=True)
-with col3:
-    st.markdown("""
-    <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <div class="feature-title">Fun Commands</div>
-        <div class="feature-text">Jokes, quotes & more</div>
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown("<div class='section-title'>⚡ Quick Actions</div>", unsafe_allow_html=True)
+
+row1 = st.columns(3)
+row2 = st.columns(3)
+row3 = st.columns(3)
+
+with row1[0]:
+    if st.button("🧠\n\nWhat is AI", use_container_width=True):
+        send_command("what is ai")
+with row1[1]:
+    if st.button("🐍\n\nWhat is Python", use_container_width=True):
+        send_command("what is python")
+with row1[2]:
+    if st.button("📅\n\nToday's Date", use_container_width=True):
+        send_command("date")
+
+with row2[0]:
+    if st.button("🕐\n\nCurrent Time", use_container_width=True):
+        send_command("time")
+with row2[1]:
+    if st.button("🧮\n\nCalculate 25+10*2", use_container_width=True):
+        send_command("calculate 25+10*2")
+with row2[2]:
+    if st.button("😂\n\nTell a Joke", use_container_width=True):
+        send_command("joke")
+
+with row3[0]:
+    if st.button("💡\n\nMotivate Me", use_container_width=True):
+        send_command("quote")
+with row3[1]:
+    if st.button("🆘\n\nHelp / Commands", use_container_width=True):
+        send_command("help")
+with row3[2]:
+    if st.button("👋\n\nSay Bye", use_container_width=True):
+        send_command("bye")
 
 st.markdown("<div class='section-title'>💬 Chat with RuleBot</div>", unsafe_allow_html=True)
-
-# =========================================================
-# SESSION STATE
-# =========================================================
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {
-            "role": "assistant",
-            "content": (
-                "Hello! 👋 I'm **RuleBot**.\n\n"
-                "Type **help** to see everything I can do."
-            )
-        }
-    ]
 
 # =========================================================
 # DISPLAY CHAT HISTORY
@@ -581,12 +593,21 @@ with st.sidebar:
     )
     st.divider()
     st.subheader("⚡ Try These")
-    commands = [
-        "hello", "what is ai", "what is python", "date", "time",
-        "calculate 25+10*2", "joke", "quote", "help", "bye"
+    sidebar_commands = [
+        ("👋 hello", "hello"),
+        ("🧠 what is ai", "what is ai"),
+        ("🐍 what is python", "what is python"),
+        ("📅 date", "date"),
+        ("🕐 time", "time"),
+        ("🧮 calculate 25+10*2", "calculate 25+10*2"),
+        ("😂 joke", "joke"),
+        ("💡 quote", "quote"),
+        ("🆘 help", "help"),
+        ("👋 bye", "bye"),
     ]
-    for command in commands:
-        st.code(command)
+    for label, cmd in sidebar_commands:
+        if st.button(label, use_container_width=True, key=f"sidebar_{cmd}"):
+            send_command(cmd)
 
     st.divider()
     if st.button("🗑️ Clear Conversation", use_container_width=True):
